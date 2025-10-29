@@ -1,0 +1,27 @@
+---
+# basic_audit.yaml
+# This playbook runs a few basic system checks to demonstrate automation.
+
+- name: Basic System Audit
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Check system uptime
+      command: uptime
+      register: uptime_output
+
+    - name: List all logged-in users
+      command: who
+      register: users_output
+
+    - name: Show disk usage
+      command: df -h
+      register: disk_usage
+
+    - name: Display results
+      debug:
+        msg:
+          - "🕒 Uptime: {{ uptime_output.stdout }}"
+          - "👤 Logged-in users: {{ users_output.stdout }}"
+          - "💾 Disk usage: {{ disk_usage.stdout }}"
