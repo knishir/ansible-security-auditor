@@ -1,0 +1,14 @@
+[Unit]
+Description=Ansible Security Auditor Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/ansible-security-auditor/run_audit.sh
+WorkingDirectory=/root/ansible-security-auditor
+StandardOutput=append:/opt/ansible/logs/audit-service.log
+StandardError=append:/opt/ansible/logs/audit-service.log
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
