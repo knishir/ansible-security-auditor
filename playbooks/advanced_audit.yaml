@@ -1,0 +1,37 @@
+---
+# advanced_audit.yaml
+# Enhanced version of the audit playbook that logs output to a file
+
+- name: Advanced System Audit and Log
+  hosts: all
+  become: yes
+  vars:
+    log_file: "/opt/ansible/logs/audit-report.log"
+
+  tasks:
+    - name: Run system uptime check
+      command: uptime
+      register: uptime_output
+
+    - name: Run disk usage check
+      command: df -h
+      register: disk_output
+
+    - name: Check active services
+      command: systemctl list-units --type=service --state=running
+      register: service_output
+
+    - name: Create log entry
+      copy:
+        dest: "{{ log_file }}"
+        content: |
+          ========== SYSTEM AUDIT REPORT ==========
+          🕒 Uptime: {{ uptime_output.stdout }}
+          💾 Disk Usage: {{ disk_output.stdout }}
+          ⚙️  Running Services: {{ service_output.stdout }}
+          ========================================
+      delegate_to: localhost
+
+    - name: Notify user
+      debug:
+        msg: "✅ Audit report saved to {{ log_file }}"
