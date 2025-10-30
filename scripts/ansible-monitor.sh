@@ -10,7 +10,7 @@ trap 'on_error $LINENO $?' ERR
 
 # ===== Configuration (small, change later) =====
 REPO_DIR="/root/ansible-security-auditor"
-PLAYBOOK="${1:-site.yml}"
+PLAYBOOK="playbooks/basic_audit.yaml"
 INVENTORY="${2:-inventory.ini}"
 LOG_DIR="/opt/ansible/logs"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
@@ -29,6 +29,8 @@ echo "SERVICE_NAME: $SERVICE_NAME"
 echo "LOG_RETENTION_DAYS: $LOG_RETENTION_DAYS"
 echo "=== step1 done ==="
 
+
+
 # === Step2: Checking the log directory ===
 
 if [ ! -d "$LOG_DIR" ]; then
@@ -44,6 +46,9 @@ echo "=== step2 done ==="
 echo "Verified log directory: $(ls -ld $LOG_DIR)"
 echo "=== step2 done ==="
 
+
+
+
 # === Step3: check for ansible-playbook availability ===
 if command -v ansible-playbook >/dev/null 2>&1; then
   echo "✅ ansible-playbook found at: $(command -v ansible-playbook)"
@@ -52,6 +57,8 @@ else
   exit 3
 fi
 echo "=== step3 done ==="
+
+
 
 
 # === Step4: pull latest changes from Git if available ===
@@ -68,3 +75,22 @@ else
   echo "❌ No Git repository found in ${REPO_DIR}. Skipping git pull."
 fi
 echo "=== step4 done ==="
+
+
+
+# === Step5: Run the Ansible playbook and log output ===
+echo "Running ansible-playbook..."
+{
+  echo "=== ansible-playbook started at $(date) ==="
+cd "$REPO_DIR" || { echo "❌ Failed to cd into $REPO_DIR"; exit 1; }
+ansible-playbook -i "$INVENTORY" "$PLAYBOOK"
+  echo "=== ansible-playbook finished at $(date) ==="
+} | tee -a "$LOGFILE"
+
+if [ ${PIPESTATUS[0]} -eq 0 ]; then
+  echo "✅ ansible-playbook executed successfully. Log saved to: $LOGFILE"
+else
+  echo "❌ ansible-playbook failed. Check log: $LOGFILE"
+fi
+
+echo "=== step5 done ==="
