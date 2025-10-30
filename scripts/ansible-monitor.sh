@@ -52,3 +52,19 @@ else
   exit 3
 fi
 echo "=== step3 done ==="
+
+
+# === Step4: pull latest changes from Git if available ===
+if [ -d "${REPO_DIR}/.git" ]; then
+  echo "Found Git repository in ${REPO_DIR}. Checking for updates..."
+  pushd "$REPO_DIR" >/dev/null
+  if git pull --ff-only; then
+    echo "✅ Repository updated successfully."
+  else
+    echo "⚠️  git pull failed or not a fast-forward merge. Continuing with local copy."
+  fi
+  popd >/dev/null
+else
+  echo "❌ No Git repository found in ${REPO_DIR}. Skipping git pull."
+fi
+echo "=== step4 done ==="
