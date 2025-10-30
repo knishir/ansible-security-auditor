@@ -28,3 +28,27 @@ echo "LOGFILE: $LOGFILE"
 echo "SERVICE_NAME: $SERVICE_NAME"
 echo "LOG_RETENTION_DAYS: $LOG_RETENTION_DAYS"
 echo "=== step1 done ==="
+
+# === Step2: Checking the log directory ===
+
+if [ ! -d "$LOG_DIR" ]; then
+  echo "Creating log directory: $LOG_DIR"
+  mkdir -p "$LOG_DIR"
+else
+  echo "Log directory already exists: $LOG_DIR"
+fi
+echo "Verified log directory: $(ls -ld $LOG_DIR)"
+echo "=== step2 done ==="
+
+
+echo "Verified log directory: $(ls -ld $LOG_DIR)"
+echo "=== step2 done ==="
+
+# === Step3: check for ansible-playbook availability ===
+if command -v ansible-playbook >/dev/null 2>&1; then
+  echo "✅ ansible-playbook found at: $(command -v ansible-playbook)"
+else
+  echo "❌ ansible-playbook not found! Please install Ansible before running this script."
+  exit 3
+fi
+echo "=== step3 done ==="
