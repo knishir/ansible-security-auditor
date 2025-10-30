@@ -1,6 +1,6 @@
 # 🔐 Ansible Security Auditor
 
-A **proof-of-concept (PoC)** project for automating system security audits, monitoring, and compliance checks using **Ansible** and **systemd** integration.  
+A project for automating system security audits, monitoring, and compliance checks using **Ansible** and **systemd** integration.  
 It allows administrators and DevSecOps teams to perform consistent, repeatable audits across multiple servers with minimal effort.
 
 ---
