@@ -94,3 +94,11 @@ else
 fi
 
 echo "=== step5 done ==="
+
+
+# === Step6: Cleanup old logs ===
+echo "Cleaning up logs older than $LOG_RETENTION_DAYS days in $LOG_DIR ..."
+find "$LOG_DIR" -type f -name "ansible-run-*.log" -mtime +$LOG_RETENTION_DAYS -exec rm -f {} \; -print
+
+echo "✅ Log cleanup complete. Old logs older than $LOG_RETENTION_DAYS days deleted."
+echo "=== step6 done ==="
